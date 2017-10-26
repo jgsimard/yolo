@@ -5,22 +5,11 @@ from network.net import YOLO
 from utils.pascal_voc import pascal_voc
 from trainer import Trainer
 
-
-def update_config_paths(data_dir, weights_file):
-    cfg.DATA_PATH = data_dir
-    cfg.PASCAL_PATH = os.path.join(data_dir, 'pascal_voc')
-    cfg.CACHE_PATH = os.path.join(cfg.PASCAL_PATH, 'cache')
-    cfg.OUTPUT_DIR = os.path.join(cfg.PASCAL_PATH, 'output')
-    cfg.WEIGHTS_DIR = os.path.join(cfg.PASCAL_PATH, 'weights')
-    cfg.WEIGHTS_FILE = os.path.join(cfg.WEIGHTS_DIR, weights_file)
-
 def main():
     #command line interface
     parser = argparse.ArgumentParser()
-    parser.add_argument('-weights', default="YOLO_small.ckpt", type=str)
-    parser.add_argument('-data_dir', default="data", type=str)
-    parser.add_argument('-threshold', default=0.2, type=float)
-    parser.add_argument('-iou_threshold', default=0.5, type=float)
+    parser.add_argument('-threshold', default = cfg.THRESHOLD, type=float)
+    parser.add_argument('-iou_threshold', default= cfg.IOU_THRESHOLD, type=float)
     parser.add_argument('-gpu', default='0', type=str)
     args = parser.parse_args()
 
