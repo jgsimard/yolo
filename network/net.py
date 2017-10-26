@@ -1,10 +1,8 @@
-
 import numpy as np
 import tensorflow as tf
-import yolo.config as cfg
+import network.config as cfg
 
 slim = tf.contrib.slim
-
 
 class YOLO(object):
     '''

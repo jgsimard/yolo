@@ -3,7 +3,7 @@ from datetime import datetime
 import os
 from utils.timer import Timer
 
-import yolo.config as cfg
+import network.config as cfg
 
 class Trainer(object):
     '''
@@ -44,7 +44,7 @@ class Trainer(object):
         
         
         self.optimizer = tf.train.AdamOptimizer(
-                learning_rate=self.learning_rate).minimize(
+            learning_rate=self.learning_rate).minimize(
             self.net.total_loss, global_step=self.global_step)
         
         self.ema = tf.train.ExponentialMovingAverage(decay=0.9999)
@@ -106,8 +106,7 @@ class Trainer(object):
             else: #normal training step
                 train_timer.tic()
                 self.sess.run(self.train_op, feed_dict=feed_dict)
-                train_timer.toc()
-            
+                train_timer.toc()          
                 
             #saving phase
             if step % self.save_iter == 0:
@@ -115,7 +114,6 @@ class Trainer(object):
                 self.saver.save(self.sess, self.ckpt_file, global_step=self.global_step)
 
     def save_cfg(self):
-
         with open(os.path.join(self.output_dir, 'config.txt'), 'w') as f:
             cfg_dict = cfg.__dict__
             for key in sorted(cfg_dict.keys()):

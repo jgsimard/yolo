@@ -1,16 +1,17 @@
 import os
 
 ''' Paths '''
-DATA_PATH    = 'data'
+NETWORK_PATH = 'network'
+DATA_PATH    = os.path.join(NETWORK_PATH,'data')
 PASCAL_PATH  = os.path.join(DATA_PATH, 'pascal_voc')
 CACHE_PATH   = os.path.join(PASCAL_PATH, 'cache')
 OUTPUT_DIR   = os.path.join(PASCAL_PATH, 'output')
-WEIGHTS_DIR  = os.path.join(PASCAL_PATH, 'weights')
-TEST_DIR     = 'test'
-TEST_VIDEO_FILE = 'test_video/video.avi'
-#WEIGHTS_FILE = None
-#WEIGHTS_FILE = os.path.join(DATA_PATH, 'weights', 'YOLO_small.ckpt')
-WEIGHTS_FILE = os.path.join(DATA_PATH, 'weights', 'save.ckpt-15000')
+WEIGHTS_DIR  = os.path.join(DATA_PATH, 'weights')
+WEIGHTS_FILE = os.path.join(WEIGHTS_DIR, 'weights_JG')
+
+TEST_DIR       = 'test'
+TEST_VIDEO_DIR = os.path.join(TEST_DIR,'video')
+TEST_IMG_DIR   = os.path.join(TEST_DIR,'img')
 
 CLASSES = ['aeroplane', 'bicycle', 'bird', 'boat', 'bottle', 
            'bus', 'car', 'cat', 'chair', 'cow', 

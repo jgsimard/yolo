@@ -2,32 +2,27 @@ import os
 import cv2
 import argparse
 import platform
-import yolo.config as cfg
-from yolo.yolo_net import YOLO
-from detector import Detector
+import network.config as cfg
+from network.net import YOLO
+from network.detector import Detector
 import warnings
 
-def main():
+def main():    
     parser = argparse.ArgumentParser(description=' Test the detector ')
-    parser.add_argument('--weights', default="save.ckpt-15000", metavar='', type=str, help= ' weights file' )
-    parser.add_argument('--weight_dir', default='weights', type=str,metavar='', help= 'Folder contaning the weight file')
-    parser.add_argument('--data_dir', default="data", type=str,metavar='', help = 'Folder contaning the weight folder')
+    parser.add_argument('--weights', default=cfg.WEIGHTS_FILE, metavar='', type=str, help= ' weights file' )
     parser.add_argument('--gpu', default='', action='store_const', const='0', help = 'Use gpu for inference')  
     parser.add_argument('--camera', action='store_const', const=True, help = 'Test the detector on the live feed of the camera')
     parser.add_argument('--img_path',metavar='', help = 'Test the detector on a static image, give the path')
     parser.add_argument('--video_path',metavar='', help = 'Test the detector on a video, give the path')
     parser.add_argument('--test_img', action='store_const', const=True, help = 'Test the detector on sample images')
     parser.add_argument('--test_video', action='store_const', const=True, help = 'Test the detector on a sample video')
-        
+    parser.add_argument('--save', action='store_const', const=True, help = 'Save the results')     
     args = parser.parse_args()
-   
-    warnings.filterwarnings("ignore")
-    
+       
     os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
-    if(args.camera or args.test_img or args.test_video or args.img or args.video):
+    if(args.camera or args.test_img or args.test_video or args.img_path or args.video_path):
         yolo = YOLO(False)
-        weight_file = os.path.join(args.data_dir, args.weight_dir, args.weights)
-        detector = Detector(yolo, weight_file)
+        detector = Detector(yolo, args.weights, args.save)
     
         if args.camera:
             # detect from camera
@@ -42,19 +37,18 @@ def main():
             detector(cap)
             
         if args.test_img:
-            for img_name in os.listdir(cfg.TEST_DIR):
-                detector(cfg.TEST_DIR + '/'+ img_name)
+            print('Test images')
+            for img_name in os.listdir(cfg.TEST_IMG_DIR):
+                detector(os.path.join(cfg.TEST_IMG_DIR,img_name))
         
         if args.test_video:
-            print('Test video ')
-            print('Does video file exist : ', os.path.isfile(cfg.TEST_VIDEO_FILE))
-    #        import skvideo.io
-    #        cap = skvideo.io.vreader(cfg.TEST_VIDEO_FILE)
-    #        cap = skvideo.io.VideoCapture(cfg.TEST_VIDEO_FILE)
-            cap = cv2.VideoCapture(cfg.TEST_VIDEO_FILE) # doesnt work, dont know why
-            print("opened", cap.isOpened())
-            if cap.isOpened():
-                detector(cap)
+            print('Test video')
+            for video_name in os.listdir(cfg.TEST_VIDEO_DIR):
+                cap = cv2.VideoCapture(os.path.join(cfg.TEST_VIDEO_DIR,video_name))
+                if cap.isOpened():
+                    detector(cap)
+                else:
+                    print('Impossible to video :', video_name)
                 
         if args.img_path:
             if os.path.isfile(args.img):
@@ -63,8 +57,7 @@ def main():
                 print('Image file, ', args.img,' does not exist !')
         
         if args.video_path:
-            if os.path.isfile(args.video):
-    
+            if os.path.isfile(args.video): 
                 detector(cv2.VideoCapture(args.video))
             else:
                 print('Video file, ', args.video,' does not exist !')

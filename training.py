@@ -1,7 +1,7 @@
 import os
 import argparse
-import yolo.config as cfg
-from yolo.yolo_net import YOLO
+import network.config as cfg
+from network.net import YOLO
 from utils.pascal_voc import pascal_voc
 from trainer import Trainer
 

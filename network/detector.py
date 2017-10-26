@@ -1,15 +1,17 @@
 import tensorflow as tf
 import numpy as np
 import cv2
-import yolo.config as cfg
+import network.config as cfg
 from utils.timer import step_time
+import os 
 
 class Detector(object):
 
-    def __init__(self, net, weight_file):
+    def __init__(self, net, weight_file, save_file):
         self.net = net
         self.weights_file = weight_file
-
+        
+        self.save           = save_file
         self.classes        = cfg.CLASSES
         self.colors         = cfg.COLORS
         self.num_class      = len(self.classes)
@@ -21,6 +23,7 @@ class Detector(object):
         self.boundary1      = self.cell_size ** 2 * self.num_class
         self.boundary2      = self.cell_size ** 2 * self.boxes_per_cell  + self.boundary1
 
+
         self.sess = tf.Session()
         self.sess.run(tf.global_variables_initializer())
 
@@ -30,25 +33,18 @@ class Detector(object):
 
     def draw_prediction(self, img, result):
         for i in range(len(result)):
-            x = int(result[i][1])
-            y = int(result[i][2])
-            w = int(result[i][3] / 2)
-            h = int(result[i][4] / 2)
+            x, y = int(result[i][1]),   int(result[i][2])
+            w, h = int(result[i][3]/2), int(result[i][4]/2)
             #bouding box
-            cv2.rectangle(img, 
-                          (x - w, y - h), 
-                          (x + w, y + h), 
-                          self.colors[result[i][0]], 2)
+            cv2.rectangle(img, (x - w, y - h), (x + w, y + h), self.colors[result[i][0]], 2)
             
-            #text bouding background box
-            cv2.rectangle(img, 
-                          (x - w, y - h - 20),
-                          (x + w, y - h), 
-                          self.colors[result[i][0]], -1)
-            cv2.putText(img, 
-                        self.classes[result[i][0]] + ' : %.2f' % result[i][5],
-                        (x - w + 5, y - h - 7),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,255,255), 1, cv2.LINE_AA)
+            #text background box
+            cv2.rectangle(img, (x - w, y - h - 20),(x + w, y - h),  self.colors[result[i][0]], -1)
+            
+            #class
+            cv2.putText(img, self.classes[result[i][0]] + ' : %.2f' % result[i][5],
+                        (x - w + 5, y - h - 7), cv2.FONT_HERSHEY_SIMPLEX, 
+                        0.5, (255,255,255), 1, cv2.LINE_AA)
 
     @step_time('Detection')
     def detect(self, img):
@@ -180,7 +176,11 @@ class Detector(object):
             self.draw_prediction(image, result)
             cv2.imshow('Image : ' + input_name, image)
             cv2.waitKey(0)
-
+            if self.save:
+                if not os.path.exists('results'):
+                    os.makedirs('results')
+                cv2.imwrite(os.path.join('results',os.path.basename(input_name)),image)
+            
         else:
             print('video')
             ret, _ = input_name.read()
