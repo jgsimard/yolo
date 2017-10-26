@@ -16,9 +16,6 @@ def main():
     if args.gpu is not None:
         cfg.GPU = args.gpu
 
-    if args.data_dir != cfg.DATA_PATH:
-        update_config_paths(args.data_dir, args.weights)
-
     os.environ['CUDA_VISIBLE_DEVICES'] = cfg.GPU
       
     yolo = YOLO()
