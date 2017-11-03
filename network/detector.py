@@ -3,8 +3,14 @@ import numpy as np
 import cv2
 import network.config as cfg
 from utils.timer import step_time
-import os 
+import os
+import platform
+import mimetypes
 
+CAMERA = 0
+TEST_IMG = 1
+TEST_VIDEO = 2
+    
 class Detector(object):
 
     def __init__(self, net, weight_file, save_file):
@@ -164,22 +170,22 @@ class Detector(object):
         
         return intersection / (box1[2] * box1[3] + box2[2] * box2[3] - intersection)
     
-    def __call__(self, input_name, wait = 10):
+    
+    def d_img(self, input_name):   
+        image = cv2.imread(input_name)
         
-        #not the most beautiful code, must come back to correct it!
-        if type(input_name) == str:           
-            image = cv2.imread(input_name)
+        result = self.detect(image)          
+        self.draw_prediction(image, result)
+        cv2.imshow('Image : ' + input_name, image)
+        cv2.waitKey(0)
+        if self.save:
+            if not os.path.exists('results'):
+                os.makedirs('results')
+            cv2.imwrite(os.path.join('results',os.path.basename(input_name)),image)
             
-            result = self.detect(image)          
-            self.draw_prediction(image, result)
-            cv2.imshow('Image : ' + input_name, image)
-            cv2.waitKey(0)
-            if self.save:
-                if not os.path.exists('results'):
-                    os.makedirs('results')
-                cv2.imwrite(os.path.join('results',os.path.basename(input_name)),image)
-            
-        else:
+    def d_vid(self, input_name, wait):        
+        cap = cv2.VideoCapture(input_name)
+        if cap.isOpened():
             print('video')
             ret, _ = input_name.read()
             print(ret)
@@ -188,7 +194,45 @@ class Detector(object):
                 
                 result = self.detect(frame)        
                 self.draw_prediction(frame, result)
-                cv2.imshow('Camera', frame)
+                cv2.imshow('Image of video', frame)
                 cv2.waitKey(wait)
         
                 ret, frame = input_name.read()
+            
+        else:
+            print('Impossible to read video :', input_name)
+            
+            
+    def __call__(self, input_name, wait = 10):
+        
+        if input_name == CAMERA:
+            # detect from camera
+            if platform.release() == '4.4.15-tegra': #only way to make it work on jetson
+                self.d_vid("nvcamerasrc ! video/x-raw(memory:NVMM), width=(int)1280, height=(int)720, \
+                           format=(string)I420, framerate=(fraction)12/1 ! \
+                           nvvidconv flip-method=6 ! video/x-raw, format=(string)I420 ! \
+                           	videoconvert ! video/x-raw, format=(string)BGR ! \
+                                		appsink")
+            else:
+                self.d_vid(0)
+                
+        elif input_name == TEST_IMG:
+            for img_name in os.listdir(cfg.TEST_IMG_DIR):
+                self.d_img(os.path.join(cfg.TEST_IMG_DIR,img_name))
+                             
+        elif input_name == TEST_VIDEO:
+            for video_name in os.listdir(cfg.TEST_VIDEO_DIR):
+                self.d_vid(os.path.join(cfg.TEST_VIDEO_DIR,video_name))
+
+        else:
+            t = mimetypes.guess_type(input_name)
+            if t[0] is not None:
+                file_type= t[0].split('/')[0]
+                if file_type == 'image':
+                    self.d_img(input_name)
+                elif file_type == 'video':
+                    self.d_vid(input_name)
+                    
+                
+            
+    
