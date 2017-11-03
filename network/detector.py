@@ -6,10 +6,6 @@ from utils.timer import step_time
 import os
 import platform
 import mimetypes
-
-CAMERA = 0
-TEST_IMG = 1
-TEST_VIDEO = 2
     
 class Detector(object):
 
@@ -205,8 +201,7 @@ class Detector(object):
             
     def __call__(self, input_name, wait = 10):
         
-        if input_name == CAMERA:
-            # detect from camera
+        if input_name == cfg.CAMERA:
             if platform.release() == '4.4.15-tegra': #only way to make it work on jetson
                 self.d_vid("nvcamerasrc ! video/x-raw(memory:NVMM), width=(int)1280, height=(int)720, \
                            format=(string)I420, framerate=(fraction)12/1 ! \
@@ -216,11 +211,11 @@ class Detector(object):
             else:
                 self.d_vid(0)
                 
-        elif input_name == TEST_IMG:
+        elif input_name == cfg.TEST_IMG:
             for img_name in os.listdir(cfg.TEST_IMG_DIR):
                 self.d_img(os.path.join(cfg.TEST_IMG_DIR,img_name))
                              
-        elif input_name == TEST_VIDEO:
+        elif input_name == cfg.TEST_VIDEO:
             for video_name in os.listdir(cfg.TEST_VIDEO_DIR):
                 self.d_vid(os.path.join(cfg.TEST_VIDEO_DIR,video_name))
 
@@ -232,7 +227,3 @@ class Detector(object):
                     self.d_img(input_name)
                 elif file_type == 'video':
                     self.d_vid(input_name)
-                    
-                
-            
-    

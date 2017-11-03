@@ -2,7 +2,7 @@ import os
 import argparse
 import network.config as cfg
 from network.net import YOLO
-import network.detector as dec
+from network.detector import Detector
 
 def main():    
     parser = argparse.ArgumentParser(description=' Test the detector ')
@@ -17,18 +17,18 @@ def main():
     args = parser.parse_args()
        
     os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
+    
     if(args.camera or args.test_img or args.test_video or args.file_path or args.alive):
-        yolo = YOLO(False)
-        detector = dec.Detector(yolo, args.weights, args.save)
+        detector = Detector(YOLO(False), args.weights, args.save)
     
         if args.camera:
-            detector(dec.CAMERA)
+            detector(cfg.CAMERA)
             
         if args.test_img:
-            detector(dec.TEST_IMG)
+            detector(cfg.TEST_IMG)
                    
         if args.test_video:
-            detector(dec.TEST_VIDEO)
+            detector(cfg.TEST_VIDEO)
                 
         if args.file_path:
             detector(args.file_path)
@@ -38,8 +38,7 @@ def main():
                detector(input( "Give me a file to analyse : "))
                
     else:
-        print('Nothing to do')
-        print('use -h or --help for more information')
+        print('Nothing to do \nuse -h or --help for more information')
         
 if __name__ == '__main__':
     main()

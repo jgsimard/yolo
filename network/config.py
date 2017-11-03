@@ -13,6 +13,10 @@ TEST_DIR       = 'test'
 TEST_VIDEO_DIR = os.path.join(TEST_DIR,'video')
 TEST_IMG_DIR   = os.path.join(TEST_DIR,'img')
 
+CAMERA = 0
+TEST_IMG = 1
+TEST_VIDEO = 2
+
 CLASSES = ['aeroplane', 'bicycle', 'bird', 'boat', 'bottle', 
            'bus', 'car', 'cat', 'chair', 'cow', 
            'diningtable', 'dog', 'horse','motorbike', 'person',
