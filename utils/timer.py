@@ -1,6 +1,17 @@
 from datetime import timedelta
 from time import time
 
+#high level decoretor
+def step_time(time_name = 'Step'):
+    def inner(func):
+        def wrapper(*args, **kargs):
+            start_time = time()
+            rv = func(*args, **kargs)
+            print(time_name + ' time: {:.3f}s'.format(time() - start_time))
+            return rv
+        return wrapper
+    return inner   
+
 class Timer(object):
     '''
     A simple timer to display the average and remaining time
@@ -43,14 +54,3 @@ class Timer(object):
         else:
             self.remain_time = (time()-self.init_time)*(max_iters-iters)/iters
         return str(timedelta(seconds=int(self.remain_time)))
-
-#high level decoretor
-def step_time(time_name = 'Step'):
-    def inner(func):
-        def wrapper(*args, **kargs):
-            start_time = time()
-            rv = func(*args, **kargs)
-            print(time_name + ' time: {:.3f}s'.format(time() - start_time))
-            return rv
-        return wrapper
-    return inner   

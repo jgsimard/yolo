@@ -34,7 +34,7 @@ class Trainer(object):
         self.saver = tf.train.Saver(self.variable_to_restore, max_to_keep=None)
         self.ckpt_file = os.path.join(self.output_dir, 'save.ckpt')
         self.summary_op = tf.summary.merge_all()
-        self.writer = tf.summary.FileWriter(self.output_dir, flush_secs=60)
+        self.writer = tf.summary.FileWriter(self.output_dir, flush_secs = 60)
 
         self.global_step = tf.get_variable('global_step', [], initializer=tf.constant_initializer(0), trainable=False)
         
@@ -43,8 +43,7 @@ class Trainer(object):
             self.decay_rate, self.staircase, name='learning_rate')
         
         
-        self.optimizer = tf.train.AdamOptimizer(
-            learning_rate=self.learning_rate).minimize(
+        self.optimizer = tf.train.AdamOptimizer(self.learning_rate).minimize(
             self.net.total_loss, global_step=self.global_step)
         
         self.ema = tf.train.ExponentialMovingAverage(decay=0.9999)

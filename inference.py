@@ -26,7 +26,7 @@ def main():
     
         if args.camera:
             # detect from camera
-            if (platform.release() == '4.4.15-tegra'): #only way to make it work on jetson
+            if platform.release() == '4.4.15-tegra': #only way to make it work on jetson
                 cap = cv2.VideoCapture("nvcamerasrc ! video/x-raw(memory:NVMM), width=(int)1280, height=(int)720, \
                     format=(string)I420, framerate=(fraction)12/1 ! \
         			nvvidconv flip-method=6 ! video/x-raw, format=(string)I420 ! \

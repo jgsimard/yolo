@@ -113,9 +113,7 @@ class Detector(object):
         filter_mat_boxes = np.nonzero(filter_mat_probs) #indices
          
         #box that heve at least one likely class
-        boxes_filtered = boxes[filter_mat_boxes[0],
-                               filter_mat_boxes[1],
-                               filter_mat_boxes[2]]
+        boxes_filtered = boxes[filter_mat_boxes[0],filter_mat_boxes[1],filter_mat_boxes[2]]
         
         #probs above the threshold
         probs_filtered = probs[filter_mat_probs]
