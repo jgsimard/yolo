@@ -38,7 +38,7 @@ def main():
                detector(input( "Give me a file to analyse : "))
                
     else:
-        print('Nothing to do \nuse -h or --help for more information')
+        print('Nothing to do \nUse -h or --help for more information')
         
 if __name__ == '__main__':
     main()

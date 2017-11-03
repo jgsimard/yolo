@@ -90,8 +90,7 @@ class YOLO(object):
                 #Stage 5
                 for i in range(2):
                     net = slim.conv2d(net, 512, 1, scope='conv_' + str(22 + i * 2))
-                    net = slim.conv2d(net, 1024, 3, scope='conv_' + str(23 + i * 2))
-                    
+                    net = slim.conv2d(net, 1024, 3, scope='conv_' + str(23 + i * 2))     
                 net = slim.conv2d(net, 1024, 3, scope='conv_26')
                 net = tf.pad(net, np.array([[0, 0], [1, 1], [1, 1], [0, 0]]), name='pad_27')
                 net = slim.conv2d(net, 1024, 3, 2, padding='VALID', scope='conv_28')
@@ -104,13 +103,12 @@ class YOLO(object):
                 net = tf.transpose(net, [0, 3, 1, 2], name='trans_31')
                 net = slim.flatten(net, scope='flat_32')
                 
-                #Stage  not in original structure
+                #Stage  8
                 net = slim.fully_connected(net, 512, scope='fc_33')
                 net = slim.fully_connected(net, 4096, scope='fc_34')
                 net = slim.dropout(net, keep_prob = keep_prob, is_training = is_training, scope='dropout_35')
-                
-                #Stage 8
                 net = slim.fully_connected(net, num_outputs, activation_fn=None, scope='fc_36')
+                
         return net
 
     def iou(self, boxes1, boxes2, scope='iou'):
@@ -133,7 +131,7 @@ class YOLO(object):
                  
             boxes1 = extreme_pts(boxes1)
             boxes2 = extreme_pts(boxes2)
-
+ 
             # calculate the left up point & right down point
             lu = tf.maximum(boxes1[:, :, :, :, :2], boxes2[:, :, :, :, :2]) # left and up
             rd = tf.minimum(boxes1[:, :, :, :, 2:], boxes2[:, :, :, :, 2:]) # right and down
@@ -225,10 +223,10 @@ class YOLO(object):
             tf.summary.scalar('noobject_loss', no_object_loss)
             tf.summary.scalar('coord_loss', coord_loss)
 
-#            tf.summary.histogram('boxes_delta_x', boxes_delta[:, :, :, :, 0])
-#            tf.summary.histogram('boxes_delta_y', boxes_delta[:, :, :, :, 1])
-#            tf.summary.histogram('boxes_delta_w', boxes_delta[:, :, :, :, 2])
-#            tf.summary.histogram('boxes_delta_h', boxes_delta[:, :, :, :, 3])
+            tf.summary.histogram('boxes_delta_x', boxes_delta[:, :, :, :, 0])
+            tf.summary.histogram('boxes_delta_y', boxes_delta[:, :, :, :, 1])
+            tf.summary.histogram('boxes_delta_w', boxes_delta[:, :, :, :, 2])
+            tf.summary.histogram('boxes_delta_h', boxes_delta[:, :, :, :, 3])
             tf.summary.histogram('iou', iou_predict_truth)
 
 

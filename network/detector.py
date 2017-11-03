@@ -166,40 +166,37 @@ class Detector(object):
         
         return intersection / (box1[2] * box1[3] + box2[2] * box2[3] - intersection)
     
-    
-    def d_img(self, input_name):   
-        image = cv2.imread(input_name)
-        
-        result = self.detect(image)          
-        self.draw_prediction(image, result)
-        cv2.imshow('Image : ' + input_name, image)
-        cv2.waitKey(0)
+    def single_img(self, img, img_name, wait = 0):
+        result = self.detect(img)          
+        self.draw_prediction(img, result)
+        cv2.imshow(img_name, img)
+        cv2.waitKey(wait)
         if self.save:
             if not os.path.exists('results'):
                 os.makedirs('results')
-            cv2.imwrite(os.path.join('results',os.path.basename(input_name)),image)
+            cv2.imwrite(os.path.join('results',os.path.basename(img_name)),img)
+        
+        
+    def img(self, input_name):   
+        image = cv2.imread(input_name)
+        self.single_img(image, input_name,0)
+        
             
-    def d_vid(self, input_name, wait):        
+    def vid(self, input_name, wait):        
         cap = cv2.VideoCapture(input_name)
         if cap.isOpened():
-            print('video')
-            ret, _ = input_name.read()
-            print(ret)
-            while ret: 
-                ret, frame = input_name.read()
-                
-                result = self.detect(frame)        
-                self.draw_prediction(frame, result)
-                cv2.imshow('Image of video', frame)
-                cv2.waitKey(wait)
-        
-                ret, frame = input_name.read()
+            while True: 
+                ret, frame = cap.read()
+                if ret:
+                    self.single_img(frame,'Image of video'+input_name,wait)
+                else:
+                    break
             
         else:
-            print('Impossible to read video :', input_name)
+            print('Impossible to open video :', input_name)
             
             
-    def __call__(self, input_name, wait = 10):
+    def __call__(self, input_name):
         
         if input_name == cfg.CAMERA:
             if platform.release() == '4.4.15-tegra': #only way to make it work on jetson
@@ -207,23 +204,23 @@ class Detector(object):
                            format=(string)I420, framerate=(fraction)12/1 ! \
                            nvvidconv flip-method=6 ! video/x-raw, format=(string)I420 ! \
                            	videoconvert ! video/x-raw, format=(string)BGR ! \
-                                		appsink")
+                                		appsink",10)
             else:
-                self.d_vid(0)
+                self.d_vid(0,10)
                 
         elif input_name == cfg.TEST_IMG:
             for img_name in os.listdir(cfg.TEST_IMG_DIR):
-                self.d_img(os.path.join(cfg.TEST_IMG_DIR,img_name))
+                self.img(os.path.join(cfg.TEST_IMG_DIR,img_name))
                              
         elif input_name == cfg.TEST_VIDEO:
             for video_name in os.listdir(cfg.TEST_VIDEO_DIR):
-                self.d_vid(os.path.join(cfg.TEST_VIDEO_DIR,video_name))
+                self.vid(os.path.join(cfg.TEST_VIDEO_DIR,video_name),10)
 
         else:
             t = mimetypes.guess_type(input_name)
             if t[0] is not None:
                 file_type= t[0].split('/')[0]
                 if file_type == 'image':
-                    self.d_img(input_name)
+                    self.img(input_name)
                 elif file_type == 'video':
-                    self.d_vid(input_name)
+                    self.vid(input_name)

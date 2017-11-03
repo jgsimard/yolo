@@ -18,10 +18,7 @@ def main():
 
     os.environ['CUDA_VISIBLE_DEVICES'] = cfg.GPU
       
-    yolo = YOLO()
-    pascal = pascal_voc('train')
-
-    trainer = Trainer(yolo, pascal)
+    trainer = Trainer(YOLO(), pascal_voc('train'))
 
     print('Start training ...')
     trainer.train()

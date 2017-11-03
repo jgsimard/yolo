@@ -94,11 +94,10 @@ class pascal_voc(object):
             os.makedirs(self.cache_path)
 
         if self.phase == 'train':
-            txtname = os.path.join(self.data_path, 'ImageSets', 'Main',
-                                   'trainval.txt')
+            txtname = os.path.join(self.data_path, 'ImageSets', 'Main', 'trainval.txt')
         else:
-            txtname = os.path.join(self.data_path, 'ImageSets', 'Main',
-                                   'test.txt')
+            txtname = os.path.join(self.data_path, 'ImageSets', 'Main', 'test.txt')
+        
         with open(txtname, 'r') as f:
             self.image_index = [x.strip() for x in f.readlines()]
 
@@ -119,12 +118,10 @@ class pascal_voc(object):
         Load image and bounding boxes info from XML file in the PASCAL VOC
         format.
         """
-
         imname = os.path.join(self.data_path, 'JPEGImages', index + '.jpg')
         im = cv2.imread(imname)
-        h_ratio = 1.0 * self.image_size / im.shape[0]
-        w_ratio = 1.0 * self.image_size / im.shape[1]
-        # im = cv2.resize(im, [self.image_size, self.image_size])
+        h_ratio = self.image_size / im.shape[0]
+        w_ratio = self.image_size / im.shape[1]
 
         label = np.zeros((self.cell_size, self.cell_size, 25))
         filename = os.path.join(self.data_path, 'Annotations', index + '.xml')

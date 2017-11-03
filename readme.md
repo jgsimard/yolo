@@ -8,12 +8,17 @@ Based on a paper by Joseph Redmon (https://pjreddie.com/media/files/papers/yolo_
 
 ### Prerequisites
 
-Download the weights and put them in network\data\weights 
+Python 3, Tensorflow, Opencv
+
+If the shell scripts don't work.
+
+Download the weights and put them in network\data\weights folder.
+ 
 Link : https://www.dropbox.com/s/oit8og2t2on0j5t/weights_JG.zip?dl=0
 
-
-
 ### Training
+
+Before the first time, run the two shell scripts
 
 
 ```
@@ -25,6 +30,7 @@ python training.py --gpu
 
 
 ### Inference
+Before the first time, only run the weights shell scripts
 
 ```
 python inference.py --test_img
@@ -48,9 +54,9 @@ Dog and boy
 
 * [Tensorflow](https://www.tensorflow.org/) - An open-source software library for Machine Intelligence
 
+* [OpenCV](https://opencv.org/) - OpenCV is a library of programming functions mainly aimed at real-time computer vision
+
 
 ## Authors
 
 * **Jean-Gabriel Simard**
-
-
