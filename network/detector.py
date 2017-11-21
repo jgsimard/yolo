@@ -196,9 +196,18 @@ class Detector(object):
             print('Impossible to open video :', input_name)
             
             
+    def file(self, input_name):
+        t = mimetypes.guess_type(input_name)
+        if t[0] is not None:
+            file_type= t[0].split('/')[0]
+            if file_type == 'image':
+                self.img(input_name)
+            elif file_type == 'video':
+                self.vid(input_name)
+                
     def __call__(self, input_name):
         
-        if input_name == cfg.CAMERA:
+        if input_name == cfg.CMD_CAMERA:
             if platform.release() == '4.4.15-tegra': #only way to make it work on jetson
                 self.d_vid("nvcamerasrc ! video/x-raw(memory:NVMM), width=(int)1280, height=(int)720, \
                            format=(string)I420, framerate=(fraction)12/1 ! \
@@ -208,19 +217,17 @@ class Detector(object):
             else:
                 self.d_vid(0,10)
                 
-        elif input_name == cfg.TEST_IMG:
+        elif input_name == cfg.CMD_TEST_IMG:
             for img_name in os.listdir(cfg.TEST_IMG_DIR):
                 self.img(os.path.join(cfg.TEST_IMG_DIR,img_name))
                              
-        elif input_name == cfg.TEST_VIDEO:
+        elif input_name == cfg.CMD_TEST_VIDEO:
             for video_name in os.listdir(cfg.TEST_VIDEO_DIR):
                 self.vid(os.path.join(cfg.TEST_VIDEO_DIR,video_name),10)
+                
+        elif input_name == cfg.CMD_ALIVE:
+            while True:
+                self.file(input( "Give me a file to analyse : "))
 
         else:
-            t = mimetypes.guess_type(input_name)
-            if t[0] is not None:
-                file_type= t[0].split('/')[0]
-                if file_type == 'image':
-                    self.img(input_name)
-                elif file_type == 'video':
-                    self.vid(input_name)
+            self.file(input_name)
