@@ -8,33 +8,48 @@ Based on a paper by Joseph Redmon (https://pjreddie.com/media/files/papers/yolo_
 
 ### Prerequisites
 
-Python 3, Tensorflow, Opencv
+Install the following : Python 3, Tensorflow, Opencv
 
-If the shell scripts don't work.
-
-Download the weights and put them in network\data\weights folder.
+If on linux :
+In terminal, in the folder yolo run this
+```
+chmod u+x download_pascal.sh download_weights
+./download_weights
+```
+If on Windows:
+Download the weights with one of the links, extract the file and put the result in the folder and put them network\data\weights folder.
  
-Link : https://www.dropbox.com/s/oit8og2t2on0j5t/weights_JG.zip?dl=0
+Link : https://www.dropbox.com/s/oit8og2t2on0j5t/weights_JG.zip?dl=0 or https://www.dropbox.com/s/7uyw95l2qgebvoe/weights.tar
 
 ### Training
-
-Before the first time, run the two shell scripts
-
+On linux, before the first training session, run this command in terminal in the folder yolo
+```
+./download_pascal.sh
+```
+The file training.py trains the network.
 
 ```
-python training.py --gpu
+python training.py -gpu
 ```
 
- --gpu is optional
+"-gpu" is a flag to use the gpu if one is present 
 
 
 
 ### Inference
 Before the first time, only run the weights shell scripts
 
+The file inference.py does inference on images and video. 
 ```
-python inference.py --test_img
+python inference.py -test_img -gpu
 ```
+* Flags
+    * "-gpu"  : use the gpu if one is present 
+    * "-test_img" and "-test_video" : run the network on files in the test folder
+    * "-file_path FILE_PATH" : give the path to a file and the network will process that file
+    * "-save" : saves the results
+    * "-h" : gives information on the flags
+    
 
 ## Results
 
