@@ -52,9 +52,9 @@ class Detector(object):
     def detect(self, img):
         img_h, img_w, _ = img.shape
         inputs = cv2.resize(img, (self.image_size, self.image_size))
-        inputs = cv2.cvtColor(inputs, cv2.COLOR_BGR2RGB).astype(np.float32) # because opencv is weird
-        inputs = (inputs / 255.0) * 2.0 - 1.0 #normalization
-        inputs = np.reshape(inputs, (1, self.image_size, self.image_size, 3))#make a 4D tensor (batch_size = 1)
+        inputs = cv2.cvtColor(inputs, cv2.COLOR_BGR2RGB).astype(np.float32)  # because opencv is weird
+        inputs = (inputs / 255.0) * 2.0 - 1.0                                # normalization
+        inputs = np.reshape(inputs, (1, self.image_size, self.image_size, 3))# 4D tensor (batch_size = 1)
 
         result = self.inference(inputs)
 
@@ -98,10 +98,10 @@ class Detector(object):
         offset = np.transpose(np.reshape(np.array([np.arange(self.cell_size)] * self.cell_size * self.boxes_per_cell),
                                          [self.boxes_per_cell, self.cell_size, self.cell_size]), (1, 2, 0))
 
-        boxes[:, :, :, 0] += offset
-        boxes[:, :, :, 1] += np.transpose(offset, (1, 0, 2))
-        boxes[:, :, :, :2] = boxes[:, :, :, 0:2] / self.cell_size
-        boxes[:, :, :, 2:] = np.square(boxes[:, :, :, 2:])
+        boxes[:, :, :, 0]  += offset
+        boxes[:, :, :, 1]  += np.transpose(offset, (1, 0, 2))
+        boxes[:, :, :, :2] /= self.cell_size
+        boxes[:, :, :, 2:]  = np.square(boxes[:, :, :, 2:])
 
         boxes *= self.image_size
 
@@ -188,10 +188,9 @@ class Detector(object):
             while True: 
                 ret, frame = cap.read()
                 if ret:
-                    self.single_img(frame,'Image of video'+input_name,wait)
+                    self.single_img(frame,'Image of video' + input_name, wait)
                 else:
-                    break
-            
+                    break       
         else:
             print('Impossible to open video :', input_name)
             
@@ -204,6 +203,8 @@ class Detector(object):
                 self.img(input_name)
             elif file_type == 'video':
                 self.vid(input_name)
+        else:
+            print('Impossible to open file :', input_name)
                 
     def __call__(self, input_name):
         
