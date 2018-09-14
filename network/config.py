@@ -2,48 +2,43 @@ import os
 
 ''' Paths '''
 NETWORK_PATH = 'network'
-DATA_PATH    = os.path.join(NETWORK_PATH,'data')
-PASCAL_PATH  = os.path.join(DATA_PATH, 'pascal_voc')
-CACHE_PATH   = os.path.join(PASCAL_PATH, 'cache')
-OUTPUT_DIR   = os.path.join(PASCAL_PATH, 'output')
-WEIGHTS_DIR  = os.path.join(DATA_PATH, 'weights')
+DATA_PATH = os.path.join(NETWORK_PATH, 'data')
+PASCAL_PATH = os.path.join(DATA_PATH, 'pascal_voc')
+CACHE_PATH = os.path.join(PASCAL_PATH, 'cache')
+OUTPUT_DIR = os.path.join(PASCAL_PATH, 'output')
+WEIGHTS_DIR = os.path.join(DATA_PATH, 'weights')
 WEIGHTS_FILE = os.path.join(WEIGHTS_DIR, 'weights_JG')
 
-TEST_DIR       = 'test'
-TEST_VIDEO_DIR = os.path.join(TEST_DIR,'video')
-TEST_IMG_DIR   = os.path.join(TEST_DIR,'img')
+TEST_DIR = 'test'
+TEST_VIDEO_DIR = os.path.join(TEST_DIR, 'video')
+TEST_IMG_DIR = os.path.join(TEST_DIR, 'img')
 
-CMD_CAMERA     = 0
-CMD_TEST_IMG   = 1
-CMD_TEST_VIDEO = 2
-CMD_ALIVE      = 3
+CLASSES = ['aeroplane', 'bicycle', 'bird', 'boat', 'bottle',
+           'bus', 'car', 'cat', 'chair', 'cow',
+           'diningtable', 'dog', 'horse', 'motorbike', 'person',
+           'pottedplant', 'sheep', 'sofa', 'train', 'tvmonitor']
 
-CLASSES = ['aeroplane', 'bicycle', 'bird', 'boat', 'bottle', 
-           'bus', 'car', 'cat', 'chair', 'cow', 
-           'diningtable', 'dog', 'horse','motorbike', 'person',
-           'pottedplant', 'sheep', 'sofa','train', 'tvmonitor']
-
-#random set of color
-COLORS  = [ (200, 220, 120),
-            (250, 33 , 244),
-            (156, 250, 58 ),
-            (202, 168, 95 ),
-            (12,  240, 35 ),
-            (66,  245, 233),
-            (53,  25 ,231 ),
-            (231, 32 , 195),
-            (254, 42 , 52 ),
-            (170, 83 , 239),
-            (127, 148, 250),
-            (134, 164, 166),
-            (126, 125, 1  ),
-            (65,  228, 212),
-            (24,  219, 199),
-            (253, 204, 234),
-            (144, 156, 215),
-            (125, 103, 182),
-            (134, 89 , 17 ),
-            (41,  223, 235)]
+# random set of color
+COLORS = [(200, 220, 120),
+          (250, 33, 244),
+          (156, 250, 58),
+          (202, 168, 95),
+          (12, 240, 35),
+          (66, 245, 233),
+          (53, 25, 231),
+          (231, 32, 195),
+          (254, 42, 52),
+          (170, 83, 239),
+          (127, 148, 250),
+          (134, 164, 166),
+          (126, 125, 1),
+          (65, 228, 212),
+          (24, 219, 199),
+          (253, 204, 234),
+          (144, 156, 215),
+          (125, 103, 182),
+          (134, 89, 17),
+          (41, 223, 235)]
 FLIPPED = True
 
 ''' Model '''
